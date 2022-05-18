@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="styleSheet" href="css/style.css"/>
+    <script src="js/ticket.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Document</title>
+</head>
+<body ng-app="tickets" ng-controller="ticketCtrl">
+    <div class="titulo-admin">
+        <h1>Dashboard</h1>
+        <span class="who">{{nombre}}</span>
+        <button ng-click="cerrar()" class="btn-primary button-close" style="right: 20px;position: absolute;">Cerrar</button>
+      </div>
+    <div class="titulo-usuarios" ng-if="idRol==1">
+        <h2> Crear Tickets</h2>
+      
+      </div>
+
+      <div class="titulo-usuarios" ng-if="idRol==2">
+        <h2> Administrar Ticket N2</h2>
+      
+      </div>
+
+
+    <div class="contenedorUser" ng-if="idRol==1">
+     
+        <table class="table">
+            <tr>
+                <td class="table-td"><select name="" id="" ng-model="ticket.id_estado" class="form-select" required>
+                    <option ng-disabled ng-selected="true">Seleccione estado</option>
+                    <option value="1">escalado</option>
+                   </select>
+                </td>
+                <td><input type="text" ng-model="ticket.nombre" id="nombre"  disabled class="form-control"  required/></td>
+                <td><input type="text" ng-model="ticket.comentario" class="form-control" placeholder=" * ingrese Comentario" required/></td>
+                <td><input type="file" ng-model="ticket.nombreArchivo" id="archivosU" class="form-control" required/></td>
+            </tr>
+            <tr>
+                <td class="table-td">
+                    <select name="" id="" ng-model="ticket.id_departamento" class="form-select" required>
+                        <option ng-disabled ng-selected="true">Seleccione Departamento</option>
+                        <option value="1">Administrativo</option>
+                        <option value="2">Tecnico Convergente</option>
+                        <option value="3">Retencion</option>
+                        <option value="3">RRHH</option>
+                    </select>
+                </td>
+                <td class="table-td">
+                        <select name="" id="" ng-model="ticket.id_user" class="form-select" ng-options="x.nombre for x in usuariosNivelDos" required>
+                      
+                        <option label="Seleccione Usuario" ></option>
+                    </select>
+                </td> <td class="table-td">
+                    <select name="" id="" ng-model="ticket.id_prioridad" class="form-select" required>
+                        <option ng-disabled ng-selected="true">Seleccione Prioridad</option>
+                        <option value="1">Baja</option>
+                        <option value="2">Media</option>
+                        <option value="3">Alta</option>
+                    </select>
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td class="table-td"></td>
+                <td class="table-td"></td>
+                <td class="table-td"></td>
+                <td class="table-td"><center><button class="btn btn-primary" style="margin-left: 150px;" ng-click="sendTicket(ticket)">Guardar</button></center></td>
+            </tr>
+        </table>
+
+        <div style="width: 100%;height: 40px; background-color: white;margin-bottom: 30px;">
+           <center><h3>Mis Tickets</h3></center>
+        </div>
+        <table class="table" style="font-size: 15px;;">
+            <thead style="background-color: black;color: white;border-color: none !important" >
+            <tr >
+                <th>id</th>
+                <th scope="col">Archivo</th>
+                <th>Comentario</th>
+                <th>Departamento</th>
+                <th>Estado</th>
+                <th>Fecha Carga</th>
+                <th>Fecha Actualizacion</th>
+                <th>Prioridad</th>
+                <th>Usuario</th>
+                <th>Asignado</th>
+                <th>CT</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 13px;;">
+            <tr ng-repeat="x in ticketsUser">
+                <td>{{x.id}}</td>
+                <td ><a href="{{x.archivo}}" download>Archivo</a></td> 
+                <td>{{x.comentario}}</td>
+                <td><span ng-if="x.departamento==1">Administrativo</span ><span ng-if="x.departamento==2">Técnico C</span><span ng-if="x.departamento==3">Retencion</span><span ng-if="x.departamento==4">RRHH</span></td>
+                <td><span ng-if="x.estado==1">Escalado</span><span ng-if="x.estado==2"style="background-color:rgb(211, 211, 21);color:white">En_Proceso</span><span ng-if="x.estado==3" style="background-color:red;color:white">Devuelto</span><span ng-if="x.estado==4" style="background-color:green;color:white">Terminado</span></td>
+                <td>{{x.fecha_carga}}</td>
+                <td>{{x.fecha_act}}</td>
+                <td><span ng-if="x.prioridad==1">Bajo</span><span ng-if="x.prioridad==2">Medio</span><span ng-if="x.prioridad==3">Alto</span></td>
+                <td>{{nombre}}</td>
+                <td>{{x.usuarioAsignado}}</td>
+                <td><a href="archivos/certificado.pdf" download ng-if="x.estado==4">PDF</a></td>
+            </tr>
+        </tbody>
+        </table>
+   
+    </div>
+
+    <div class="contenedorUser" ng-if="idRol==2">
+        <div style="width: 100%;height: 40px; background-color: white;margin-bottom: 30px;">
+            <center><h3>Mis Tickets Asignados</h3></center>
+         </div>
+         <table class="table" style="font-size: 15px;;">
+             <thead style="background-color: black;color: white;border-color: none !important" >
+             <tr >
+                <th>id</th>
+                 <th scope="col">Archivo</th>
+                 <th>Comentario</th>
+                 <th>Departamento</th>
+                 <th>Estado</th>
+                 <th>Fecha Carga</th>
+                 <th>Fecha Actualizacion</th>
+                 <th>Prioridad</th>
+                 <th>Usuario</th>
+                 <th>Asignado</th>
+             </tr>
+         </thead>
+         <tbody style="font-size: 13px;;">
+             <tr ng-repeat="x in ticketsAdmin">
+                 <td ng-if="x.estado==1" >{{x.id}}</td>
+                 <td ng-if="x.estado==1"><a href="{{x.archivo}}" download>Archivo</a></td> 
+                 <td ng-if="x.estado==1">{{x.comentario}}</td>
+                 <td ng-if="x.estado==1"><span ng-if="x.departamento==1">Administrativo</span ><span ng-if="x.departamento==2">Técnico C</span><span ng-if="x.departamento==3">Retencion</span><span ng-if="x.departamento==4">RRHH</span></td>
+                 <td ng-if="x.estado==1"><span ng-if="x.estado==1">Escalado</span><span ng-if="x.estado==2" >En_Proceso</span><span ng-if="x.estado==3" >Devuelto</span><span ng-if="x.estado==4" >Terminado</span></td>
+                 <td ng-if="x.estado==1" style="width:90px">{{x.fecha_carga}}</td>
+                 <td ng-if="x.estado==1" style="width:90px">{{x.fecha_act}}</td>
+                 <td ng-if="x.estado==1" style="width:80px"><span ng-if="x.prioridad==1">Bajo</span><span ng-if="x.prioridad==2">Medio</span><span ng-if="x.prioridad==3">Alto</span></td>
+                 <td ng-if="x.estado==1">{{nombre}}</td>
+                 <td ng-if="x.estado==1">{{x.usuarioAsignado}}</td>
+                 <td ng-if="x.estado==1"><button class="btn_min" ng-click="devolver(x)">X</button></td>
+                 <td ng-if="x.estado==1"><button class="btn_min" ng-click="pasar(x)">OK</button></td>
+             </tr>
+         </tbody>
+         </table>
+    </div>
+
+    
+    
+</body>
+</html>
